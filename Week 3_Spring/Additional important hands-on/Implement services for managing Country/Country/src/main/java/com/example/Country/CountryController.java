@@ -21,24 +21,19 @@ public class CountryController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @PostMapping
+   @PostMapping
     public ResponseEntity<Country> addCountry(@RequestBody Country country) {
-        return ResponseEntity.ok(countryService.addCountry(country));
+        countryService.addCountry(country);
+        return ResponseEntity.status(201).body(country);
     }
+    
+   @GetMapping("/find")
+   public ResponseEntity<Country> findCountryByCode(@RequestParam String code) {
+       return countryService.getCountryByCode(code)
+               .map(ResponseEntity::ok)
+               .orElse(ResponseEntity.notFound().build());
+   }
 
-    @PutMapping("/{code}")
-    public ResponseEntity<Country> updateCountry(@PathVariable String code, @RequestBody Country country) {
-        return ResponseEntity.ok(countryService.updateCountry(code, country));
-    }
 
-    @DeleteMapping("/{code}")
-    public ResponseEntity<Void> deleteCountry(@PathVariable String code) {
-        countryService.deleteCountry(code);
-        return ResponseEntity.noContent().build();
-    }
 
-    @GetMapping("/search")
-    public ResponseEntity<List<Country>> searchCountries(@RequestParam("name") String partialName) {
-        return ResponseEntity.ok(countryService.searchCountriesByPartialName(partialName));
-    }
 }
